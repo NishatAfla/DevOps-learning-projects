@@ -3,6 +3,8 @@
 **Update system:**
 
 sudo apt update && sudo apt upgrade -y
+![Items (1)](../DevOps_Pictures/items-1.png)
+
 
 ![Screenshot from 2025-04-24 13-08-02.png](/.attachments/Screenshot%20from%202025-04-24%2013-08-02-474c3776-2c7a-44a9-a91a-713053cfe664.png)
 
