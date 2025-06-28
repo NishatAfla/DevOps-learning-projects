@@ -1,0 +1,25 @@
+apps:
+  - name: hello1
+    image: flask-hello1:h1
+    containerPort: 5000
+    path: /hello1
+
+  - name: hello2
+    image: flask-hello2:h2
+    containerPort: 5000
+    path: /hello2
+
+replicaCount: 1
+
+ingress:
+  enabled: true
+  className: "nginx"
+  host: hello-app.local
+
+# optional:
+resources: {}
+autoscaling:
+  enabled: false
+nodeSelector: {}
+tolerations: []
+affinity: {}

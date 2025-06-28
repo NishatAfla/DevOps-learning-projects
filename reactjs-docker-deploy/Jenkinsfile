@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+    steps {
+        git branch: 'nodejs_Deploy_test', 
+            credentialsId: 'jenkins_nishat21', 
+            url: 'https://dev.azure.com/fronturetech/Fronture%20ERP/_git/hands-on-lab-nishat'
+          }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'npm run build'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Hello world'
+                
+            }
+        }
+    }
+}
+

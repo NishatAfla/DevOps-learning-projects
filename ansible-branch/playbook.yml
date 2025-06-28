@@ -1,0 +1,45 @@
+- name: Manage Apache on host-1 and host-2
+  hosts: host_vms
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+      tags: 
+        - install
+        - update
+
+    - name: Install Apache2
+      apt:
+        name: apache2
+        state: latest
+      tags: install
+
+    - name: Start and enable Apache2 service
+      service:
+        name: apache2
+        state: started
+        enabled: true
+      tags: install
+
+    - name: Update Apache2 to latest version
+      apt:
+        name: apache2
+        state: latest
+      tags: update
+
+    - name: Stop Apache2 service
+      service:
+        name: apache2
+        state: stopped
+        enabled: false
+      tags: uninstall
+
+    - name: Uninstall Apache2
+      apt:
+        name: apache2
+        state: absent
+        purge: yes
+      tags: uninstall
+

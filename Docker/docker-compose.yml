@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  backend:
+    build: ./laravel-app
+    ports:
+      - "8001:80"
+    volumes:
+      - ./laravel-app:/var/www/html
+    networks:
+      - app-network
+
+  frontend:
+    build: ./reactjs-hello-world
+    ports:
+      - "3000:80"
+    networks:
+      - app-network
+networks:
+  app-network: {}

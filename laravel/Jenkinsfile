@@ -1,0 +1,60 @@
+pipeline {
+    agent any
+
+    environment {
+        PHP_VERSION = '8.3' // Update this to match your PHP version
+        COMPOSER_CACHE_DIR = "${WORKSPACE}/.composer"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git branch: 'laravel_test', 
+                    credentialsId: '5aRswikc32QvfAp5xF49YHT8qWYV0yVo0WMCnk1IzXVGUdueplPWJQQJ99BCACAAAAAAAAAAAAASAZDO4eRs', 
+                    url: 'https://dev.azure.com/fronturetech/Fronture%20ERP/_git/hands-on-lab-nishat'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'composer install --no-interaction --prefer-dist --optimize-autoloader'
+            }
+        }
+
+        stage('Setup Environment') {
+            steps {
+                sh 'cp .env.example .env'
+                sh 'php artisan key:generate'
+            }
+        }
+
+
+        stage('Run Migrations') {
+            steps {
+                sh 'php artisan migrate --force'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'php artisan test'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo 'Deploying Laravel App...'
+                // Add deployment commands here (e.g., rsync, scp, docker deploy)
+            }
+        }
+    }
+
+    post {
+        success {
+            echo ' Laravel CI/CD pipeline completed successfully!'
+        }
+        failure {
+            echo ' Pipeline failed. Check logs for details.'
+        }
+    }
+}

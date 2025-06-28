@@ -1,0 +1,62 @@
+pipeline {
+    agent any
+    environment {
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcloud-creds')
+    }
+    stages {
+        stage('GCP VM Management') {
+            steps {
+                script {
+                    sh 'gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS'
+                    sh 'gcloud config set project devopslearning-396112'
+
+                    if (env.BRANCH_NAME == "development") {
+                        def vmExists = sh(
+                            script: 'gcloud compute instances list --filter="name=demo-vm" --format="value(name)"',
+                            returnStdout: true
+                        ).trim()
+
+                        if (vmExists == "") {
+                            echo "VM 'demo-vm' does not exist. Creating now..."
+                            sh 'gcloud compute instances create demo-vm --zone=asia-southeast1-b --machine-type=e2-micro'
+                        } else {
+                            echo "VM 'demo-vm' already exists. Skipping creation."
+                        }
+
+                    } else if (env.BRANCH_NAME == "staging") {
+                        def isMergeCommit = sh(
+                            script: 'git log -1 --pretty=%P | wc -w',
+                            returnStdout: true
+                        ).trim().toInteger() > 1
+
+                        if (isMergeCommit) {
+                            echo "Merge commit detected in staging. Stopping VM..."
+                            sh 'gcloud compute instances stop demo-vm --zone=asia-southeast1-b'
+                        } else {
+                            echo "No merge commit detected. Skipping VM stop."
+                        }
+
+                    } else if (env.BRANCH_NAME == "main") {
+                        def isMergeCommit = sh(
+                            script: 'git log -1 --pretty=%P | wc -w',
+                            returnStdout: true
+                        ).trim().toInteger() > 1
+
+                        if (isMergeCommit) {
+                            echo "Merge commit detected in main. Starting VM..."
+                            sh 'gcloud compute instances start demo-vm --zone=asia-southeast1-b'
+                        } else {
+                            echo "No merge commit detected. Skipping VM start demo1."
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+            
+
+                           
+
+
+

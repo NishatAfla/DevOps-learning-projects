@@ -1,0 +1,32 @@
+- name: Manage Notepad++ on Ubuntu via Wine
+  hosts: hosts_vms
+  become: yes
+  tasks:
+    - name: Update APT cache
+      apt:
+        update_cache: yes
+
+    - name: Install wine
+      apt:
+        name: wine
+        state: present
+
+    - name: Install Notepad++
+      command: wine /tmp/npp-installer.exe /S
+      args:
+        chdir: /tmp
+      tags: install
+
+    - name: Update Notepad++
+      command: wine /tmp/npp-latest-installer.exe /S
+      args:
+        chdir: /tmp
+      tags: update
+
+    - name: Uninstall Notepad++
+      command: wine uninstaller
+      args:
+        chdir: /tmp
+      ignore_errors: yes
+      tags: uninstall
+
