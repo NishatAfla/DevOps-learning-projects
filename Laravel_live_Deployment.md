@@ -75,6 +75,8 @@ php artisan serve --host=0.0.0.0 --port=8001
 App was accessible at:
 
     http://157.173.218.225:8001/account/login
+![ss.png](Docker/ss_docker/ss.png)
+
 
 8. 🔐 Login Data Verification
 
